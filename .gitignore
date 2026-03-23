@@ -1,0 +1,61 @@
+# Binaries
+voltgate
+*.exe
+
+# Configuration
+config.yaml
+.env
+
+# Generated content
+bin/*
+logs/*
+conv/*
+temp/*
+refs/*
+
+# Local runtime and publish-sensitive data
+.local-stack/*
+!.local-stack/.gitkeep
+auth/*
+!auth/.gitkeep
+__pycache__/*
+
+# Frontend generated content
+ui/.next/*
+ui/node_modules/*
+ui/tsconfig.tsbuildinfo
+
+# Storage backends
+pgstore/*
+gitstore/*
+objectstore/*
+
+# Static assets
+static/*
+
+# Authentication data
+auths/*
+!auths/.gitkeep
+
+# Documentation
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+
+# Tooling metadata
+.vscode/*
+.codex/*
+.claude/*
+.gemini/*
+.serena/*
+.agent/*
+.agents/*
+.opencode/*
+.idea/*
+.bmad/*
+_bmad/*
+_bmad-output/*
+
+# macOS
+.DS_Store
+._*

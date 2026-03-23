@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VoltGate Account Center</title>
+  <style>
+    :root {
+      --bg:#040914;--panel:rgba(8,18,36,.9);--panel-2:rgba(10,24,48,.96);--line:rgba(73,132,212,.22);
+      --line-strong:rgba(100,176,255,.38);--text:#eef7ff;--muted:#8ea3c7;--accent:#4db7ff;
+      --success:#39d7a0;--warning:#ffbb63;--danger:#ff6d8a;--shadow:0 24px 80px rgba(2,8,20,.55);
+      --radius-lg:22px;--radius-md:16px;--radius-sm:12px;--content-width:1280px;color-scheme:dark;
+      font-family:"Segoe UI","SF Pro Display","Helvetica Neue",sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:
+      radial-gradient(circle at top left,rgba(41,119,255,.24),transparent 34%),
+      radial-gradient(circle at top right,rgba(0,184,255,.14),transparent 28%),
+      linear-gradient(180deg,#040914 0%,#07101d 48%,#040914 100%);color:var(--text)}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;background-image:
+      linear-gradient(rgba(67,119,186,.08) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(67,119,186,.08) 1px,transparent 1px);background-size:48px 48px;
+      mask-image:linear-gradient(180deg,rgba(0,0,0,.6),transparent)}
+    body{padding:28px 18px 42px}
+    .app-shell{width:min(100%,var(--content-width));margin:0 auto;display:grid;gap:20px}
+    .topbar,.hero,.provider-section,.status-strip{background:var(--panel);border:1px solid var(--line);
+      border-radius:var(--radius-lg);box-shadow:var(--shadow);backdrop-filter:blur(14px)}
+    .topbar{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .brand,.key-panel,.field,.provider-title,.empty-state,.metric,.provider-badge,.account-card,.stat-box,.detail-row,.limit-panel{display:grid}
+    .brand{gap:6px}.brand h1{margin:0;font-size:clamp(1.7rem,2vw,2.35rem);letter-spacing:-.04em;font-weight:700}
+    .brand p,.provider-title p,.empty-state p,.limit-panel p{margin:0;color:var(--muted);line-height:1.55}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--accent);text-transform:uppercase;letter-spacing:.18em;font-size:11px;font-weight:700}
+    .eyebrow::before{content:"";width:18px;height:1px;background:linear-gradient(90deg,transparent,var(--accent))}
+    .key-panel{gap:10px;min-width:min(100%,420px);flex:1 1 420px}
+    .key-actions,.provider-actions,.provider-meta,.account-statuses,.model-preview,.limit-list,.account-actions,.status-copy{display:flex;gap:10px;flex-wrap:wrap}
+    .key-actions{align-items:center;justify-content:flex-end}
+    .field{gap:8px}.field label,.metric-label,.stat-box span,.detail-row span{font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);font-weight:700}
+    .field input{width:100%;border:1px solid var(--line);border-radius:14px;background:rgba(5,15,30,.88);color:var(--text);
+      padding:13px 14px;outline:none;font-size:.98rem;transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+    .field input:focus{border-color:var(--line-strong);box-shadow:0 0 0 4px rgba(77,183,255,.12);transform:translateY(-1px)}
+    .microcopy,.account-subtitle,.account-file{color:var(--muted);font-size:.9rem}
+    .button{appearance:none;border:1px solid transparent;border-radius:999px;padding:11px 16px;font-size:.94rem;font-weight:700;cursor:pointer;
+      transition:transform .2s ease,border-color .2s ease,background .2s ease,opacity .2s ease;color:var(--text);background:rgba(13,27,53,.9)}
+    .button:hover:not(:disabled){transform:translateY(-1px)}.button:disabled{cursor:not-allowed;opacity:.55}
+    .button-primary{background:linear-gradient(135deg,rgba(24,104,255,.95),rgba(77,183,255,.88));box-shadow:0 10px 28px rgba(25,107,255,.22)}
+    .button-secondary{border-color:var(--line);background:rgba(9,18,36,.9)}
+    .button-danger{border-color:rgba(255,109,138,.3);color:#ffd7de;background:rgba(45,14,21,.88)}
+    .hero{padding:22px;gap:18px}.hero-grid,.provider-grid,.account-stats,.detail-grid{display:grid;gap:14px}
+    .hero-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.provider-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+    .metric{gap:12px;align-content:space-between;padding:16px;border-radius:var(--radius-md);
+      background:linear-gradient(180deg,rgba(9,21,41,.96),rgba(7,16,31,.88));border:1px solid rgba(93,145,216,.18);min-height:118px}
+    .metric-value{font-size:clamp(1.6rem,2vw,2.35rem);font-weight:700;letter-spacing:-.04em}.metric-copy{color:var(--muted);font-size:.9rem;line-height:1.45}
+    .status-strip{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .chip,.status-pill{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;border:1px solid var(--line);
+      background:rgba(10,20,38,.9);color:var(--text);font-size:.82rem;font-weight:700;white-space:nowrap}
+    .chip-ready{border-color:rgba(57,215,160,.28);color:#b9ffe5;background:rgba(10,38,31,.78)}
+    .chip-warning{border-color:rgba(255,187,99,.28);color:#ffe2bb;background:rgba(41,28,11,.82)}
+    .chip-danger{border-color:rgba(255,109,138,.28);color:#ffd7de;background:rgba(45,14,21,.82)}
+    .chip-muted{color:var(--muted)}.chip-accent{border-color:rgba(77,183,255,.28);color:#d5f0ff;background:rgba(9,35,59,.84)}
+    .provider-section{padding:22px;gap:18px;min-height:360px}.provider-section.featured{
+      background:linear-gradient(180deg,rgba(7,20,42,.98),rgba(7,17,31,.95)),radial-gradient(circle at top right,rgba(77,183,255,.22),transparent 38%);
+      border-color:rgba(77,183,255,.3)}
+    .provider-section.provider-single{grid-column:span 2}.provider-head,.account-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap}
+    .provider-title{gap:8px}.provider-title h2,.account-name{margin:0;letter-spacing:-.03em;font-weight:700}.provider-title h2{font-size:1.6rem}.account-name{font-size:1.1rem;word-break:break-word}
+    .provider-badge{min-width:110px;padding:11px 13px;border-radius:14px;border:1px solid rgba(93,145,216,.18);background:rgba(8,17,31,.84);gap:4px}
+    .provider-badge strong{font-size:1.1rem;letter-spacing:-.03em}.provider-badge span{color:var(--muted);font-size:.82rem}
+    .accounts-grid{display:grid;gap:14px}.account-card{gap:16px;padding:16px;border-radius:var(--radius-md);border:1px solid rgba(93,145,216,.18);
+      background:linear-gradient(180deg,rgba(9,18,34,.98),rgba(7,14,25,.92))}
+    .account-identity{display:grid;gap:6px}.account-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .stat-box,.detail-row{gap:5px;padding:12px;border-radius:14px;border:1px solid rgba(93,145,216,.18);background:rgba(5,12,23,.7)}
+    .stat-box strong,.detail-row strong{font-size:.95rem;font-weight:700;word-break:break-word}.detail-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .limit-panel,.empty-state{gap:10px;padding:14px;border-radius:14px}.limit-panel{border:1px solid rgba(255,187,99,.18);background:rgba(34,24,10,.22)}
+    .empty-state{background:rgba(6,14,26,.62);border:1px dashed rgba(100,176,255,.2)}.limit-panel h3,.empty-state h3{margin:0;font-size:.96rem}
+    .provider-section.is-busy{border-color:var(--line-strong);box-shadow:0 0 0 1px rgba(77,183,255,.14),var(--shadow)}
+    .provider-section.is-busy .provider-title h2::after{content:" syncing";color:var(--accent);font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-left:10px}
+    .toast-stack{position:fixed;right:18px;bottom:18px;width:min(360px,calc(100vw - 36px));display:grid;gap:10px;z-index:30}
+    .toast{padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:rgba(7,16,31,.96);box-shadow:var(--shadow);color:var(--text);line-height:1.45;font-size:.92rem}
+    .toast-success{border-color:rgba(57,215,160,.24)}.toast-warning{border-color:rgba(255,187,99,.24)}.toast-danger{border-color:rgba(255,109,138,.24)}
+    @media (max-width:1100px){.hero-grid,.provider-grid{grid-template-columns:1fr 1fr}}
+    @media (max-width:860px){body{padding:18px 12px 34px}.hero-grid,.provider-grid,.detail-grid,.account-stats{grid-template-columns:1fr}.provider-section.provider-single{grid-column:span 1}}
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <section class="topbar">
+      <div class="brand">
+        <span class="eyebrow">Account Center</span>
+        <h1>Structured multi-account control for Claude, Antigravity, and Codex.</h1>
+        <p>Connect multiple OAuth accounts, watch live health and cooldown state, and keep a ready pool so requests can roll onto another account when one model hits a limit.</p>
+      </div>
+      <div class="key-panel">
+        <div class="field">
+          <label for="management-key">Management key</label>
+          <input id="management-key" type="password" autocomplete="current-password" placeholder="Paste MANAGEMENT_PASSWORD or your remote management key">
+        </div>
+        <div class="key-actions">
+          <button class="button button-primary" id="unlock-button" type="button">Unlock dashboard</button>
+          <button class="button button-secondary" id="refresh-button" type="button">Refresh data</button>
+          <button class="button button-secondary" id="clear-key-button" type="button">Clear saved key</button>
+        </div>
+        <div class="microcopy">The key is only used for this local management page. It is stored in your browser so you do not have to paste it on every refresh.</div>
+      </div>
+    </section>
+    <section class="hero"><div class="hero-grid" id="hero-metrics"></div></section>
+    <section class="status-strip">
+      <div class="status-copy">
+        <span class="status-pill chip-accent" id="status-pill">Waiting for a management key.</span>
+        <span class="microcopy" id="status-meta">Add your key above, then connect or inspect accounts.</span>
+      </div>
+      <div class="microcopy" id="last-updated">No data loaded yet.</div>
+    </section>
+    <section class="provider-grid" id="provider-grid"></section>
+  </div>
+  <div class="toast-stack" id="toast-stack"></div>
+  <script>
+    (function () {
+      const STORAGE_KEY = "voltgate.management.key";
+      const PROVIDERS = [
+        { key: "antigravity", title: "Antigravity", connectLabel: "Continue with Google", authPath: "/v0/management/antigravity-auth-url?is_webui=true", summary: "Add multiple Antigravity Google accounts and let the router move requests to another ready account when a model cooldown or quota block hits.", featured: true },
+        { key: "claude", title: "Claude", connectLabel: "Connect Claude", authPath: "/v0/management/anthropic-auth-url?is_webui=true", summary: "Keep separate Claude subscriptions available in one clean pool and monitor which accounts are ready or cooling down." },
+        { key: "codex", title: "Codex", connectLabel: "Continue with ChatGPT", authPath: "/v0/management/codex-auth-url?is_webui=true", summary: "Track connected Codex accounts, plan metadata, expiry, and route onto another ready account when needed." }
+      ];
+      const providerByKey = Object.fromEntries(PROVIDERS.map((provider) => [provider.key, provider]));
+      const state = { managementKey: "", authFiles: [], lastUpdatedAt: "", busyProviders: new Set() };
+      const keyInput = document.getElementById("management-key");
+      const unlockButton = document.getElementById("unlock-button");
+      const refreshButton = document.getElementById("refresh-button");
+      const clearKeyButton = document.getElementById("clear-key-button");
+      const heroMetrics = document.getElementById("hero-metrics");
+      const providerGrid = document.getElementById("provider-grid");
+      const statusPill = document.getElementById("status-pill");
+      const statusMeta = document.getElementById("status-meta");
+      const lastUpdated = document.getElementById("last-updated");
+      const toastStack = document.getElementById("toast-stack");
+
+      function escapeHTML(value) {
+        return String(value || "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
+      }
+      function encodeValue(value) { return encodeURIComponent(String(value || "")); }
+      function decodeValue(value) { return decodeURIComponent(String(value || "")); }
+      function formatNumber(value) { return new Intl.NumberFormat().format(Number(value || 0)); }
+      function parseDate(value) { if (!value) return null; const date = new Date(value); return Number.isNaN(date.getTime()) ? null : date; }
+      function formatDate(value) {
+        const date = parseDate(value);
+        if (!date) return "Not available";
+        return new Intl.DateTimeFormat(undefined, { year: "numeric", month: "short", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(date);
+      }
+      function formatRelative(value) {
+        const date = parseDate(value);
+        if (!date) return "Not available";
+        const diffMs = date.getTime() - Date.now();
+        const absSeconds = Math.round(Math.abs(diffMs) / 1000);
+        const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: "auto" });
+        if (absSeconds < 60) return rtf.format(Math.round(diffMs / 1000), "second");
+        const absMinutes = Math.round(absSeconds / 60);
+        if (absMinutes < 60) return rtf.format(Math.round(diffMs / 60000), "minute");
+        const absHours = Math.round(absMinutes / 60);
+        if (absHours < 48) return rtf.format(Math.round(diffMs / 3600000), "hour");
+        return rtf.format(Math.round(diffMs / 86400000), "day");
+      }
+      function countdown(value) {
+        const date = parseDate(value);
+        if (!date) return "Ready now";
+        const remainingMs = date.getTime() - Date.now();
+        if (remainingMs <= 0) return "Ready now";
+        const totalMinutes = Math.round(remainingMs / 60000);
+        if (totalMinutes < 1) return "Less than a minute";
+        if (totalMinutes < 60) return totalMinutes + " min";
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        if (hours < 24) return minutes ? hours + "h " + minutes + "m" : hours + "h";
+        const days = Math.floor(hours / 24);
+        const remHours = hours % 24;
+        return remHours ? days + "d " + remHours + "h" : days + "d";
+      }
+      function getPlanLabel(account) { return account && account.id_token && account.id_token.plan_type ? String(account.id_token.plan_type) : ""; }
+      function getModelStates(account) {
+        const rawStates = account && account.model_states ? account.model_states : {};
+        return Object.entries(rawStates).map(([model, stateValue]) => {
+          const stateData = stateValue || {};
+          return { model, status: stateData.status || "", status_message: stateData.status_message || "", unavailable: Boolean(stateData.unavailable), next_retry_after: stateData.next_retry_after || "", quota: stateData.quota || {}, updated_at: stateData.updated_at || "" };
+        }).sort((left, right) => left.model.localeCompare(right.model));
+      }
+      function blockedModelStates(account) { return getModelStates(account).filter((stateData) => stateData.unavailable || (stateData.quota && stateData.quota.exceeded)); }
+      function isCooling(account) { return !account.disabled && (account.unavailable || (account.quota && account.quota.exceeded) || blockedModelStates(account).length > 0); }
+      function isReady(account) { return !account.disabled && !account.unavailable; }
+      function providerAccounts(providerKey) { return state.authFiles.filter((file) => file.provider === providerKey); }
+      function providerSummary(providerKey) {
+        const accounts = providerAccounts(providerKey);
+        const ready = accounts.filter((account) => isReady(account)).length;
+        return { total: accounts.length, active: accounts.filter((account) => !account.disabled).length, ready, cooling: accounts.filter((account) => isCooling(account)).length, autoSwitchReady: ready >= 2 };
+      }
+      function overallSummary() {
+        const antigravity = providerSummary("antigravity");
+        return { total: state.authFiles.length, ready: state.authFiles.filter((account) => isReady(account)).length, cooling: state.authFiles.filter((account) => isCooling(account)).length, antigravity };
+      }
+      function setStatus(text, tone, meta) {
+        statusPill.textContent = text;
+        statusPill.className = "status-pill";
+        statusPill.classList.add(tone === "success" ? "chip-ready" : tone === "warning" ? "chip-warning" : tone === "danger" ? "chip-danger" : "chip-accent");
+        statusMeta.textContent = meta || "";
+      }
+      function showToast(text, tone) {
+        const toast = document.createElement("div");
+        toast.className = "toast " + (tone ? "toast-" + tone : "");
+        toast.textContent = text;
+        toastStack.appendChild(toast);
+        window.setTimeout(() => { toast.style.opacity = "0"; toast.style.transform = "translateY(6px)"; }, 3200);
+        window.setTimeout(() => { toast.remove(); }, 3800);
+      }
+      function saveKey() {
+        state.managementKey = keyInput.value.trim();
+        if (!state.managementKey) { window.localStorage.removeItem(STORAGE_KEY); return false; }
+        window.localStorage.setItem(STORAGE_KEY, state.managementKey);
+        return true;
+      }
+      function loadSavedKey() {
+        const saved = window.localStorage.getItem(STORAGE_KEY) || "";
+        state.managementKey = saved.trim();
+        keyInput.value = state.managementKey;
+      }
+      async function apiFetch(path, options) {
+        const config = options ? { ...options } : {};
+        const headers = new Headers(config.headers || {});
+        if (state.managementKey) headers.set("Authorization", "Bearer " + state.managementKey);
+        if (config.body && typeof config.body !== "string") { headers.set("Content-Type", "application/json"); config.body = JSON.stringify(config.body); }
+        config.headers = headers;
+        const response = await fetch(path, config);
+        const contentType = response.headers.get("content-type") || "";
+        const payload = contentType.includes("application/json") ? await response.json() : { error: (await response.text()) || "" };
+        if (!response.ok) {
+          const error = new Error(payload && payload.error ? payload.error : "Request failed with status " + response.status);
+          error.status = response.status;
+          throw error;
+        }
+        return payload;
+      }
+      async function fetchAuthFiles() {
+        const data = await apiFetch("/v0/management/auth-files");
+        const files = Array.isArray(data.files) ? data.files.slice() : [];
+        return files.filter((file) => providerByKey[file.provider]).sort((left, right) => {
+          const providerCompare = String(left.provider || "").localeCompare(String(right.provider || ""));
+          return providerCompare !== 0 ? providerCompare : String(left.name || "").localeCompare(String(right.name || ""));
+        });
+      }
+      async function loadDashboard(options) {
+        const silent = options && options.silent;
+        if (!state.managementKey) {
+          render();
+          setStatus("Waiting for a management key.", "warning", "Add your key above so the page can call the management API.");
+          lastUpdated.textContent = "No data loaded yet.";
+          return;
+        }
+        try {
+          state.authFiles = await fetchAuthFiles();
+          state.lastUpdatedAt = new Date().toISOString();
+          render();
+          lastUpdated.textContent = "Last synced " + formatDate(state.lastUpdatedAt);
+          if (!silent) {
+            const summary = overallSummary();
+            setStatus("Dashboard synced.", "success", summary.antigravity.autoSwitchReady ? "Antigravity failover pool is ready with more than one live account." : "Add more than one Antigravity account if you want automatic failover coverage.");
+          }
+        } catch (error) {
+          state.authFiles = [];
+          render();
+          if (error.status === 401) setStatus("Management key rejected.", "danger", "Check MANAGEMENT_PASSWORD or your configured remote management secret.");
+          else if (error.status === 404) setStatus("Management API unavailable.", "danger", "Enable management routes first by setting MANAGEMENT_PASSWORD or a remote management secret.");
+          else setStatus("Failed to load accounts.", "danger", error.message || "Unexpected error.");
+          lastUpdated.textContent = "No fresh data available.";
+        }
+      }
+      function renderHero() {
+        const summary = overallSummary();
+        const cards = [
+          { label: "Connected accounts", value: formatNumber(summary.total), copy: "Every connected Claude, Antigravity, and Codex OAuth record loaded into this runtime." },
+          { label: "Ready pool", value: formatNumber(summary.ready), copy: "Accounts currently available for routing with no full-auth cooldown blocking them." },
+          { label: "Cooling or limited", value: formatNumber(summary.cooling), copy: "Accounts with quota cooldown, retry delay, or model-specific temporary blocks." },
+          { label: "Antigravity failover", value: summary.antigravity.autoSwitchReady ? "Ready" : "Needs 2+", copy: summary.antigravity.autoSwitchReady ? "At least two Antigravity accounts are live, so requests can shift when one account cools down." : "Connect another Antigravity account to create a stronger automatic failover pool." }
+        ];
+        heroMetrics.innerHTML = cards.map((card) => `<article class="metric"><div class="metric-label">${escapeHTML(card.label)}</div><div class="metric-value">${escapeHTML(card.value)}</div><div class="metric-copy">${escapeHTML(card.copy)}</div></article>`).join("");
+      }
+      function renderLimitPanel(account) {
+        const blocked = blockedModelStates(account).slice(0, 6);
+        const retryAt = account.next_retry_after || (account.quota && account.quota.next_recover_at) || "";
+        if (!blocked.length && !isCooling(account) && !(account.quota && account.quota.exceeded)) return "";
+        const intro = account.quota && account.quota.exceeded
+          ? "This account recently hit a quota or rate-limit condition. The router can skip to another ready credential while this one cools down."
+          : "Some tracked models are temporarily cooling down. Requests for other ready models can still continue.";
+        return `<section class="limit-panel"><h3>Live limit state</h3><p>${escapeHTML(intro)}</p><div class="limit-list">${retryAt ? `<span class="chip chip-warning">Retry in ${escapeHTML(countdown(retryAt))}</span>` : ""}${blocked.map((stateData) => `<span class="chip chip-warning">${escapeHTML(stateData.model + (stateData.next_retry_after ? " | " + countdown(stateData.next_retry_after) : ""))}</span>`).join("")}</div></section>`;
+      }
+      function renderAccountCard(account, provider) {
+        const planLabel = getPlanLabel(account);
+        const projectLabel = account.project_id || "";
+        const modelPreview = Array.isArray(account.models_preview) ? account.models_preview : [];
+        const blocked = blockedModelStates(account);
+        const statusChips = [];
+        if (account.disabled) statusChips.push('<span class="chip chip-muted">Disabled</span>');
+        else if (account.unavailable) statusChips.push('<span class="chip chip-warning">Cooling down</span>');
+        else statusChips.push('<span class="chip chip-ready">Ready</span>');
+        if (account.quota && account.quota.exceeded) statusChips.push('<span class="chip chip-warning">Quota limited</span>');
+        if (blocked.length && !account.unavailable) statusChips.push('<span class="chip chip-accent">Partial model limits</span>');
+        if (planLabel) statusChips.push('<span class="chip chip-accent">' + escapeHTML(planLabel) + "</span>");
+
+        const identity = account.label || account.email || account.account || account.name || provider.title;
+        const subtitleParts = [];
+        if (account.email && account.email !== identity) subtitleParts.push(account.email);
+        if (projectLabel) subtitleParts.push(projectLabel);
+        if (account.account && account.account !== account.email) subtitleParts.push(account.account);
+
+        const retryAt = account.next_retry_after || (account.quota && account.quota.next_recover_at) || "";
+        const modelCount = Number(account.models_count || modelPreview.length || 0);
+        const encodedName = encodeValue(account.name || account.id || "");
+        const stats = [
+          { label: "Models", value: formatNumber(modelCount) },
+          { label: "Blocked", value: formatNumber(blocked.length) },
+          { label: "Updated", value: account.updated_at || account.modtime ? formatRelative(account.updated_at || account.modtime) : "Not available" }
+        ];
+        const detailRows = [
+          { label: "Project", value: projectLabel || "Not set" },
+          { label: "Expires", value: account.expires_at ? formatDate(account.expires_at) : "Not exposed" },
+          { label: "Next retry", value: retryAt ? formatDate(retryAt) + " (" + countdown(retryAt) + ")" : "Ready now" },
+          { label: "Last refresh", value: account.last_refresh ? formatDate(account.last_refresh) : "Not available" },
+          { label: "Routing prefix", value: account.prefix || "Default" },
+          { label: "File", value: account.name || account.id || "Unknown" }
+        ];
+        return `<article class="account-card">
+          <div class="account-top">
+            <div class="account-identity">
+              <h3 class="account-name">${escapeHTML(identity)}</h3>
+              <p class="account-subtitle">${escapeHTML(subtitleParts.length ? subtitleParts.join(" | ") : "OAuth account connected through " + provider.title + ".")}</p>
+              <p class="account-file">${escapeHTML(account.status_message || "Managed through the runtime auth pool.")}</p>
+            </div>
+            <div class="account-statuses">${statusChips.join("")}</div>
+          </div>
+          <div class="account-stats">${stats.map((stat) => `<div class="stat-box"><span>${escapeHTML(stat.label)}</span><strong>${escapeHTML(stat.value)}</strong></div>`).join("")}</div>
+          ${modelPreview.length ? `<div class="model-preview">${modelPreview.map((model) => `<span class="chip chip-accent">${escapeHTML(model)}</span>`).join("")}</div>` : ""}
+          <div class="detail-grid">${detailRows.map((row) => `<div class="detail-row"><span>${escapeHTML(row.label)}</span><strong>${escapeHTML(row.value)}</strong></div>`).join("")}</div>
+          ${renderLimitPanel(account)}
+          <div class="account-actions">
+            <button class="button button-secondary" type="button" data-action="toggle-disabled" data-name="${escapeHTML(encodedName)}" ${state.managementKey ? "" : "disabled"}>${account.disabled ? "Enable" : "Disable"}</button>
+            <button class="button button-danger" type="button" data-action="delete-account" data-name="${escapeHTML(encodedName)}" ${state.managementKey ? "" : "disabled"}>Remove</button>
+          </div>
+        </article>`;
+      }
+      function renderProviderSection(provider) {
+        const summary = providerSummary(provider.key);
+        const accounts = providerAccounts(provider.key);
+        const busy = state.busyProviders.has(provider.key);
+        const classes = (provider.featured ? "provider-section featured provider-single" : "provider-section") + (busy ? " is-busy" : "");
+        const badges = [
+          { label: "Connected", value: formatNumber(summary.total) },
+          { label: "Ready", value: formatNumber(summary.ready) },
+          { label: "Cooling", value: formatNumber(summary.cooling) },
+          { label: "Auto-switch", value: provider.key === "antigravity" ? (summary.autoSwitchReady ? "Ready" : "Needs 2+") : (summary.ready > 0 ? "Live" : "Idle") }
+        ];
+        const body = accounts.length
+          ? accounts.map((account) => renderAccountCard(account, provider)).join("")
+          : `<div class="empty-state"><h3>No ${escapeHTML(provider.title)} accounts connected yet.</h3><p>${escapeHTML(provider.summary)}</p></div>`;
+        return `<section class="${classes}" id="provider-section-${escapeHTML(provider.key)}">
+          <div class="provider-head">
+            <div class="provider-title">
+              <span class="eyebrow">${escapeHTML(provider.title)}</span>
+              <h2>${escapeHTML(provider.title)}</h2>
+              <p>${escapeHTML(provider.summary)}</p>
+            </div>
+            <div class="provider-actions">
+              <button class="button button-primary" type="button" data-action="connect" data-provider="${escapeHTML(provider.key)}" ${state.managementKey ? "" : "disabled"}>${escapeHTML(provider.connectLabel)}</button>
+              <button class="button button-secondary" type="button" data-action="refresh-provider" data-provider="${escapeHTML(provider.key)}" ${state.managementKey ? "" : "disabled"}>Refresh</button>
+            </div>
+          </div>
+          <div class="provider-meta">${badges.map((badge) => `<div class="provider-badge"><strong>${escapeHTML(badge.value)}</strong><span>${escapeHTML(badge.label)}</span></div>`).join("")}</div>
+          <div class="accounts-grid">${body}</div>
+        </section>`;
+      }
+      function renderProviders() { providerGrid.innerHTML = PROVIDERS.map((provider) => renderProviderSection(provider)).join(""); }
+      function render() { renderHero(); renderProviders(); }
+      function setProviderBusy(providerKey, busy) { if (busy) state.busyProviders.add(providerKey); else state.busyProviders.delete(providerKey); render(); }
+      function sleep(milliseconds) { return new Promise((resolve) => window.setTimeout(resolve, milliseconds)); }
+      function openPopup(url, providerKey) {
+        const width = 820, height = 760;
+        const left = window.screenX + Math.max(0, Math.floor((window.outerWidth - width) / 2));
+        const top = window.screenY + Math.max(0, Math.floor((window.outerHeight - height) / 2));
+        return window.open(url, "voltgate-" + providerKey + "-oauth", "popup=yes,width=" + width + ",height=" + height + ",left=" + left + ",top=" + top);
+      }
+      async function pollOAuthStatus(stateId) {
+        const deadline = Date.now() + (5 * 60 * 1000);
+        while (Date.now() < deadline) {
+          const response = await apiFetch("/v0/management/get-auth-status?state=" + encodeURIComponent(stateId));
+          if (response.status === "wait") { await sleep(1500); continue; }
+          if (response.status === "ok") return;
+          throw new Error(response.error || "Authentication failed.");
+        }
+        throw new Error("Authentication timed out.");
+      }
+      async function waitForProviderSync(providerKey, baselineCount, startedAtMs) {
+        for (let attempt = 0; attempt < 14; attempt += 1) {
+          await sleep(1000);
+          state.authFiles = await fetchAuthFiles();
+          state.lastUpdatedAt = new Date().toISOString();
+          render();
+          const accounts = state.authFiles.filter((file) => file.provider === providerKey);
+          const hasFreshAccount = accounts.some((account) => {
+            const updated = parseDate(account.updated_at || account.modtime || account.created_at || "");
+            return updated && updated.getTime() >= startedAtMs - 2500;
+          });
+          if (accounts.length > baselineCount || hasFreshAccount) return;
+        }
+      }
+      async function connectProvider(providerKey) {
+        const provider = providerByKey[providerKey];
+        if (!provider) return;
+        if (!state.managementKey) { setStatus("Management key required.", "warning", "Paste your key above before starting OAuth."); return; }
+        const baselineCount = providerAccounts(providerKey).length;
+        const startedAtMs = Date.now();
+        try {
+          setProviderBusy(providerKey, true);
+          setStatus("Starting " + provider.title + " OAuth.", "warning", "Complete the login in the popup window.");
+          const payload = await apiFetch(provider.authPath);
+          if (!payload || !payload.url || !payload.state) throw new Error("OAuth endpoint returned an incomplete response.");
+          const popup = openPopup(payload.url, providerKey);
+          if (!popup) throw new Error("Popup blocked by the browser. Allow popups and try again.");
+          await pollOAuthStatus(payload.state);
+          await waitForProviderSync(providerKey, baselineCount, startedAtMs);
+          await loadDashboard({ silent: true });
+          setStatus(provider.title + " account connected.", "success", "The provider pool has been refreshed.");
+          showToast(provider.title + " account connected successfully.", "success");
+        } catch (error) {
+          setStatus("OAuth flow failed for " + provider.title + ".", "danger", error.message || "Unexpected error.");
+          showToast(error.message || "OAuth failed.", "danger");
+        } finally {
+          setProviderBusy(providerKey, false);
+        }
+      }
+      async function toggleDisabled(name) {
+        const decodedName = decodeValue(name);
+        const account = state.authFiles.find((file) => (file.name || file.id) === decodedName);
+        if (!account) { showToast("Account record could not be found.", "warning"); return; }
+        try {
+          await apiFetch("/v0/management/auth-files/status", { method: "PATCH", body: { name: decodedName, disabled: !account.disabled } });
+          await loadDashboard({ silent: true });
+          showToast((account.disabled ? "Enabled " : "Disabled ") + decodedName, "success");
+        } catch (error) {
+          showToast(error.message || "Failed to update account state.", "danger");
+        }
+      }
+      async function deleteAccount(name) {
+        const decodedName = decodeValue(name);
+        if (!window.confirm("Remove " + decodedName + " from this runtime?")) return;
+        try {
+          await apiFetch("/v0/management/auth-files?name=" + encodeURIComponent(decodedName), { method: "DELETE" });
+          await loadDashboard({ silent: true });
+          showToast("Removed " + decodedName, "success");
+        } catch (error) {
+          showToast(error.message || "Failed to remove account.", "danger");
+        }
+      }
+      unlockButton.addEventListener("click", async () => {
+        if (!saveKey()) { setStatus("Management key required.", "warning", "Paste a management key to unlock the dashboard."); return; }
+        await loadDashboard();
+      });
+      refreshButton.addEventListener("click", async () => {
+        if (!state.managementKey && !saveKey()) { setStatus("Management key required.", "warning", "Paste a management key to load live account data."); return; }
+        await loadDashboard();
+      });
+      clearKeyButton.addEventListener("click", () => {
+        state.managementKey = ""; state.authFiles = []; state.lastUpdatedAt = "";
+        window.localStorage.removeItem(STORAGE_KEY); keyInput.value = ""; render();
+        setStatus("Saved key cleared.", "warning", "Paste a management key when you want to load the dashboard again.");
+        lastUpdated.textContent = "No data loaded yet.";
+      });
+      keyInput.addEventListener("keydown", async (event) => {
+        if (event.key !== "Enter") return;
+        event.preventDefault();
+        if (!saveKey()) return;
+        await loadDashboard();
+      });
+      providerGrid.addEventListener("click", async (event) => {
+        const target = event.target.closest("[data-action]");
+        if (!target) return;
+        const action = target.getAttribute("data-action");
+        if (action === "connect") { await connectProvider(target.getAttribute("data-provider")); return; }
+        if (action === "refresh-provider") { await loadDashboard(); return; }
+        if (action === "toggle-disabled") { await toggleDisabled(target.getAttribute("data-name")); return; }
+        if (action === "delete-account") await deleteAccount(target.getAttribute("data-name"));
+      });
+      loadSavedKey();
+      render();
+      if (state.managementKey) loadDashboard({ silent: true });
+      else setStatus("Waiting for a management key.", "warning", "Paste your key above so the page can call the management API.");
+    }());
+  </script>
+</body>
+</html>
