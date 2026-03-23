@@ -190,11 +190,11 @@ waitForCallback:
 		"timestamp":     now.UnixMilli(),
 		"expired":       now.Add(time.Duration(tokenResp.ExpiresIn) * time.Second).Format(time.RFC3339),
 	}
-	if antigravity.ClientID != "" {
-		metadata["client_id"] = antigravity.ClientID
+	if clientID := antigravity.OAuthClientID(); clientID != "" {
+		metadata["client_id"] = clientID
 	}
-	if antigravity.ClientSecret != "" {
-		metadata["client_secret"] = antigravity.ClientSecret
+	if clientSecret := antigravity.OAuthClientSecret(); clientSecret != "" {
+		metadata["client_secret"] = clientSecret
 	}
 	if email != "" {
 		metadata["email"] = email

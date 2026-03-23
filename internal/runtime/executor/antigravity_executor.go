@@ -1110,11 +1110,11 @@ func (e *AntigravityExecutor) refreshToken(ctx context.Context, auth *voltgateau
 
 	clientID := metaStringValue(auth.Metadata, "client_id")
 	if clientID == "" {
-		clientID = strings.TrimSpace(antigravityauth.ClientID)
+		clientID = antigravityauth.OAuthClientID()
 	}
 	clientSecret := metaStringValue(auth.Metadata, "client_secret")
 	if clientSecret == "" {
-		clientSecret = strings.TrimSpace(antigravityauth.ClientSecret)
+		clientSecret = antigravityauth.OAuthClientSecret()
 	}
 	if clientID == "" || clientSecret == "" {
 		return auth, antigravityauth.MissingCredentialsError()

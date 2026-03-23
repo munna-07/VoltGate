@@ -1315,8 +1315,8 @@ func (h *Handler) RequestGeminiCLIToken(c *gin.Context) {
 
 	// OAuth2 configuration using exported constants from internal/auth/gemini
 	conf := &oauth2.Config{
-		ClientID:     geminiAuth.ClientID,
-		ClientSecret: geminiAuth.ClientSecret,
+		ClientID:     geminiAuth.OAuthClientID(),
+		ClientSecret: geminiAuth.OAuthClientSecret(),
 		RedirectURL:  fmt.Sprintf("http://localhost:%d/oauth2callback", geminiAuth.DefaultCallbackPort),
 		Scopes:       geminiAuth.Scopes,
 		Endpoint:     google.Endpoint,
@@ -1441,8 +1441,8 @@ func (h *Handler) RequestGeminiCLIToken(c *gin.Context) {
 		}
 
 		ifToken["token_uri"] = "https://oauth2.googleapis.com/token"
-		ifToken["client_id"] = geminiAuth.ClientID
-		ifToken["client_secret"] = geminiAuth.ClientSecret
+		ifToken["client_id"] = geminiAuth.OAuthClientID()
+		ifToken["client_secret"] = geminiAuth.OAuthClientSecret()
 		ifToken["scopes"] = geminiAuth.Scopes
 		ifToken["universe_domain"] = "googleapis.com"
 
@@ -1837,11 +1837,11 @@ func (h *Handler) RequestAntigravityToken(c *gin.Context) {
 			"timestamp":     now.UnixMilli(),
 			"expired":       now.Add(time.Duration(tokenResp.ExpiresIn) * time.Second).Format(time.RFC3339),
 		}
-		if antigravity.ClientID != "" {
-			metadata["client_id"] = antigravity.ClientID
+		if clientID := antigravity.OAuthClientID(); clientID != "" {
+			metadata["client_id"] = clientID
 		}
-		if antigravity.ClientSecret != "" {
-			metadata["client_secret"] = antigravity.ClientSecret
+		if clientSecret := antigravity.OAuthClientSecret(); clientSecret != "" {
+			metadata["client_secret"] = clientSecret
 		}
 		if email != "" {
 			metadata["email"] = email

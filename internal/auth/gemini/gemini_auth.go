@@ -31,10 +31,13 @@ import (
 // OAuth configuration constants for Gemini
 const DefaultCallbackPort = 8085
 
-var (
-	ClientID     = strings.TrimSpace(os.Getenv("VOLTGATE_GEMINI_OAUTH_CLIENT_ID"))
-	ClientSecret = strings.TrimSpace(os.Getenv("VOLTGATE_GEMINI_OAUTH_CLIENT_SECRET"))
-)
+func OAuthClientID() string {
+	return strings.TrimSpace(os.Getenv("VOLTGATE_GEMINI_OAUTH_CLIENT_ID"))
+}
+
+func OAuthClientSecret() string {
+	return strings.TrimSpace(os.Getenv("VOLTGATE_GEMINI_OAUTH_CLIENT_SECRET"))
+}
 
 // OAuth scopes for Gemini authentication
 var Scopes = []string{
@@ -44,7 +47,7 @@ var Scopes = []string{
 }
 
 func CredentialsConfigured() bool {
-	return ClientID != "" && ClientSecret != ""
+	return OAuthClientID() != "" && OAuthClientSecret() != ""
 }
 
 func MissingCredentialsError() error {
@@ -91,6 +94,8 @@ func (g *GeminiAuth) GetAuthenticatedClient(ctx context.Context, ts *GeminiToken
 	if !CredentialsConfigured() {
 		return nil, MissingCredentialsError()
 	}
+	clientID := OAuthClientID()
+	clientSecret := OAuthClientSecret()
 
 	transport, _, errBuild := proxyutil.BuildHTTPTransport(cfg.ProxyURL)
 	if errBuild != nil {
@@ -104,8 +109,8 @@ func (g *GeminiAuth) GetAuthenticatedClient(ctx context.Context, ts *GeminiToken
 
 	// Configure the OAuth2 client.
 	conf := &oauth2.Config{
-		ClientID:     ClientID,
-		ClientSecret: ClientSecret,
+		ClientID:     clientID,
+		ClientSecret: clientSecret,
 		RedirectURL:  callbackURL, // This will be used by the local server.
 		Scopes:       Scopes,
 		Endpoint:     google.Endpoint,
@@ -190,8 +195,8 @@ func (g *GeminiAuth) createTokenStorage(ctx context.Context, config *oauth2.Conf
 	}
 
 	ifToken["token_uri"] = "https://oauth2.googleapis.com/token"
-	ifToken["client_id"] = ClientID
-	ifToken["client_secret"] = ClientSecret
+	ifToken["client_id"] = OAuthClientID()
+	ifToken["client_secret"] = OAuthClientSecret()
 	ifToken["scopes"] = Scopes
 	ifToken["universe_domain"] = "googleapis.com"
 

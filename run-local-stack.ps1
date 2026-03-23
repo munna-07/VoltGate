@@ -567,7 +567,15 @@ $uiTunnelUrl = ""
 $apiTunnelUrl = ""
 
 if ($Tunnel) {
-    Write-Host "Starting Cloudflare API quick tunnel for Voltgate..."
+    Write-Host "Starting Cloudflare quick tunnels for Voltgate..."
+
+    $uiTunnelProcess = Start-Process -FilePath $cloudflaredPath `
+        -ArgumentList @("tunnel", "--url", $uiBase, "--no-autoupdate") `
+        -WorkingDirectory $repoRoot `
+        -WindowStyle Hidden `
+        -RedirectStandardOutput $uiTunnelOutLog `
+        -RedirectStandardError $uiTunnelErrLog `
+        -PassThru
 
     $apiTunnelProcess = Start-Process -FilePath $cloudflaredPath `
         -ArgumentList @("tunnel", "--url", $apiRoot, "--no-autoupdate") `
@@ -578,15 +586,34 @@ if ($Tunnel) {
         -PassThru
 
     $tunnelPattern = "https://[-a-z0-9]+\.trycloudflare\.com"
+    $uiTunnelUrl = Wait-ForPatternInLog -Path $uiTunnelOutLog -Pattern $tunnelPattern -TimeoutSeconds 60
+    if (-not $uiTunnelUrl) {
+        $uiTunnelUrl = Wait-ForPatternInLog -Path $uiTunnelErrLog -Pattern $tunnelPattern -TimeoutSeconds 20
+    }
     $apiTunnelUrl = Wait-ForPatternInLog -Path $apiTunnelOutLog -Pattern $tunnelPattern -TimeoutSeconds 60
     if (-not $apiTunnelUrl) {
         $apiTunnelUrl = Wait-ForPatternInLog -Path $apiTunnelErrLog -Pattern $tunnelPattern -TimeoutSeconds 20
     }
 
+    if (-not $uiTunnelUrl) {
+        $uiTunnelOutTail = Get-LogTailText -Path $uiTunnelOutLog
+        $uiTunnelErrTail = Get-LogTailText -Path $uiTunnelErrLog
+        throw "UI quick tunnel did not start correctly. Check $uiTunnelOutLog and $uiTunnelErrLog`n`nRecent stdout:`n$uiTunnelOutTail`n`nRecent stderr:`n$uiTunnelErrTail"
+    }
     if (-not $apiTunnelUrl) {
         $apiTunnelOutTail = Get-LogTailText -Path $apiTunnelOutLog
         $apiTunnelErrTail = Get-LogTailText -Path $apiTunnelErrLog
         throw "API quick tunnel did not start correctly. Check $apiTunnelOutLog and $apiTunnelErrLog`n`nRecent stdout:`n$apiTunnelOutTail`n`nRecent stderr:`n$apiTunnelErrTail"
+    }
+    if (-not (Wait-ForUrl -Uri $uiTunnelUrl -TimeoutSeconds 120)) {
+        $uiTunnelOutTail = Get-LogTailText -Path $uiTunnelOutLog
+        $uiTunnelErrTail = Get-LogTailText -Path $uiTunnelErrLog
+        throw "UI quick tunnel URL did not become reachable: $uiTunnelUrl`n`nRecent stdout:`n$uiTunnelOutTail`n`nRecent stderr:`n$uiTunnelErrTail"
+    }
+    if (-not (Wait-ForUrl -Uri ($apiTunnelUrl.TrimEnd('/') + "/") -TimeoutSeconds 120)) {
+        $apiTunnelOutTail = Get-LogTailText -Path $apiTunnelOutLog
+        $apiTunnelErrTail = Get-LogTailText -Path $apiTunnelErrLog
+        throw "API quick tunnel URL did not become reachable: $apiTunnelUrl`n`nRecent stdout:`n$apiTunnelOutTail`n`nRecent stderr:`n$apiTunnelErrTail"
     }
 }
 

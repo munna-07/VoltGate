@@ -691,6 +691,17 @@ def main() -> int:
                 f"Recent stdout:\n{tail_log(api_tunnel_out_log)}\n\nRecent stderr:\n{tail_log(api_tunnel_err_log)}"
             )
 
+        if not wait_for_url(ui_tunnel_url, timeout_seconds=120):
+            raise RuntimeError(
+                f"UI quick tunnel URL did not become reachable: {ui_tunnel_url}\n\n"
+                f"Recent stdout:\n{tail_log(ui_tunnel_out_log)}\n\nRecent stderr:\n{tail_log(ui_tunnel_err_log)}"
+            )
+        if not wait_for_url(f"{api_tunnel_url.rstrip('/')}/", timeout_seconds=120):
+            raise RuntimeError(
+                f"API quick tunnel URL did not become reachable: {api_tunnel_url}\n\n"
+                f"Recent stdout:\n{tail_log(api_tunnel_out_log)}\n\nRecent stderr:\n{tail_log(api_tunnel_err_log)}"
+            )
+
     default_model = "MODEL_NAME_HERE"
     try:
         request = urllib.request.Request(f"{api_base}/models", headers={"Authorization": f"Bearer {api_key}"}, method="GET")

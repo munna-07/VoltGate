@@ -601,14 +601,14 @@ func prepareGeminiCLITokenSource(ctx context.Context, cfg *config.Config, auth *
 		clientID = stringValue(metadata, "client_id")
 	}
 	if clientID == "" {
-		clientID = strings.TrimSpace(geminiauth.ClientID)
+		clientID = geminiauth.OAuthClientID()
 	}
 	clientSecret := stringValue(base, "client_secret")
 	if clientSecret == "" {
 		clientSecret = stringValue(metadata, "client_secret")
 	}
 	if clientSecret == "" {
-		clientSecret = strings.TrimSpace(geminiauth.ClientSecret)
+		clientSecret = geminiauth.OAuthClientSecret()
 	}
 	if clientID == "" || clientSecret == "" {
 		return nil, nil, geminiauth.MissingCredentialsError()

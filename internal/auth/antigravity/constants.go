@@ -10,13 +10,16 @@ import (
 // OAuth client credentials and configuration
 const CallbackPort = 51121
 
-var (
-	ClientID     = strings.TrimSpace(os.Getenv("VOLTGATE_ANTIGRAVITY_OAUTH_CLIENT_ID"))
-	ClientSecret = strings.TrimSpace(os.Getenv("VOLTGATE_ANTIGRAVITY_OAUTH_CLIENT_SECRET"))
-)
+func OAuthClientID() string {
+	return strings.TrimSpace(os.Getenv("VOLTGATE_ANTIGRAVITY_OAUTH_CLIENT_ID"))
+}
+
+func OAuthClientSecret() string {
+	return strings.TrimSpace(os.Getenv("VOLTGATE_ANTIGRAVITY_OAUTH_CLIENT_SECRET"))
+}
 
 func CredentialsConfigured() bool {
-	return ClientID != "" && ClientSecret != ""
+	return OAuthClientID() != "" && OAuthClientSecret() != ""
 }
 
 func MissingCredentialsError() error {

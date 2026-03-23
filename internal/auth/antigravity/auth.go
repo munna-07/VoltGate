@@ -52,9 +52,10 @@ func (o *AntigravityAuth) BuildAuthURL(state, redirectURI string) string {
 	if strings.TrimSpace(redirectURI) == "" {
 		redirectURI = fmt.Sprintf("http://localhost:%d/oauth-callback", CallbackPort)
 	}
+	clientID := OAuthClientID()
 	params := url.Values{}
 	params.Set("access_type", "offline")
-	params.Set("client_id", ClientID)
+	params.Set("client_id", clientID)
 	params.Set("prompt", "consent")
 	params.Set("redirect_uri", redirectURI)
 	params.Set("response_type", "code")
@@ -68,10 +69,12 @@ func (o *AntigravityAuth) ExchangeCodeForTokens(ctx context.Context, code, redir
 	if !CredentialsConfigured() {
 		return nil, MissingCredentialsError()
 	}
+	clientID := OAuthClientID()
+	clientSecret := OAuthClientSecret()
 	data := url.Values{}
 	data.Set("code", code)
-	data.Set("client_id", ClientID)
-	data.Set("client_secret", ClientSecret)
+	data.Set("client_id", clientID)
+	data.Set("client_secret", clientSecret)
 	data.Set("redirect_uri", redirectURI)
 	data.Set("grant_type", "authorization_code")
 
